@@ -1,6 +1,7 @@
 from time import sleep
 import re, os, requests
 from bs4 import BeautifulSoup as bsp
+from tqdm import tqdm
 
 t = open('gamelinks.txt','r')
 try:
@@ -328,23 +329,24 @@ def breakdown(plays):
                 brek[-13] = brek[11]
     return broke
 
-y = open('output_pbp.csv','a')
+y = open('output_pbp.csv','a', encoding="utf-8")
 if os.stat('output_pbp.csv').st_size == 0:
     y.write('URL,GameType,Location,Date,Time,WinningTeam,Quarter,SecLeft,AwayTeam,AwayPlay,AwayScore,HomeTeam,HomePlay,HomeScore,Shooter,ShotType,ShotOutcome,ShotDist,Assister,Blocker,FoulType,Fouler,Fouled,Rebounder,ReboundType,ViolationPlayer,ViolationType,TimeoutTeam,FreeThrowShooter,FreeThrowOutcome,FreeThrowNum,EnterGame,LeaveGame,TurnoverPlayer,TurnoverType,TurnoverCause,TurnoverCauser,JumpballAwayPlayer,JumpballHomePlayer,JumpballPoss')
 
 t = 1
 used_links = []
-for link in game_links:
+for link in tqdm(game_links):
    if t % 15 ==0 and t != 0:
       print('Sleeping...')
       try:
-        sleep(20)
+          pass
+        #sleep(2)
       except:
-         b = open('gamelinks.txt','w')
+         b = open('gamelinks.txt','w', encoding="utf-8")
          for link in list(set(game_links) - set(used_links)):
              b.write(link + '\n')
          b.close()
-         c = open('donelinks.txt','a')
+         c = open('donelinks.txt','a', encoding="utf-8")
          for link in used_links:
              c.write(link + '\n')
          c.close()
@@ -353,24 +355,24 @@ for link in game_links:
    try:
       bd = breakdown(pbp2(link))
       for play in bd:
-        y.write('\n'+','.join([str(d) for d in play]))
+          y.write('\n'+','.join([str(d) for d in play]))
       used_links.append(link)
       print(str(len(game_links) - len(used_links) +1) + ' -- ' + link)
-      sleep(3)
+      #sleep(3)
       t+=1
       if link == game_links[-1]:
-          b = open('gamelinks.txt','w')
+          b = open('gamelinks.txt','w', encoding="utf-8")
           b.close()
-          c = open('donelinks.txt','a')
+          c = open('donelinks.txt','a', encoding="utf-8")
           for link in used_links:
               c.write(link + '\n')
           c.close()
    except:
-      b = open('gamelinks.txt','w')
+      b = open('gamelinks.txt','w', encoding="utf-8")
       for link in list(set(game_links) - set(used_links)):
           b.write(link + '\n')
       b.close()
-      c = open('donelinks.txt','a')
+      c = open('donelinks.txt','a', encoding="utf-8")
       for link in used_links:
           c.write(link + '\n')
       c.close()
